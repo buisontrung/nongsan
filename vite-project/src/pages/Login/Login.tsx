@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import './Login.scss'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { APIENDPOINT } from '../../utils/constant';
 
@@ -9,8 +9,17 @@ const Login = () => {
   
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const {login} = useAuth();
+  const {login,isAuthenticated} = useAuth();
+  
   const navigate = useNavigate();
+  console.log(isAuthenticated);
+  
+    useEffect(()=>{
+      if(isAuthenticated){
+        navigate('/')
+      }
+    },[isAuthenticated,navigate])
+  
   const handlesubmit =(event: React.FormEvent)=>{
     event.preventDefault();
     axios.post(APIENDPOINT+'/Auth/api/Auth/Login',{

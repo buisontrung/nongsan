@@ -11,7 +11,7 @@ const HomeAbout = () => {
                         </div>
                         <div className='section-about'>
 
-                            <div className="row">
+                            <div className="row mx-5 px-5">
                                 <div className="col-sm-3 text-center">
                                     <div className="about-item">
                                         <div className="about-icon">

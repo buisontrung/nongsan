@@ -2,9 +2,13 @@ import { Link } from 'react-router-dom'
 import './Header.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCartShopping, faClock, faEnvelope, faPhone, faSearch } from '@fortawesome/free-solid-svg-icons'
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { navArray } from '../../../utils/array';
 import { useAuth } from '../../Context/useAuth';
+import { ShoppingCartType } from '../../../utils/IVegetable';
+import axios from 'axios';
+import { APIENDPOINT } from '../../../utils/constant';
+import SearchInput from '../Search/SearchInput';
 interface HeaderProps {
     onMenuClick: () => void; // Prop được truyền vào là một hàm
 }
@@ -12,6 +16,19 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     const { isAuthenticated, logout,user} = useAuth();
     const [isScrolled, setIsScrolled] = useState(false);
+    const [onSearch,setOnSearch] = useState(false);
+    const [cartItems, setCartItems] = useState<ShoppingCartType[]>([]);
+    const fetchCartItems = useCallback(async () => {
+        try {
+            const response = await axios.get(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/userId=${user?.id}`);
+            setCartItems(response.data);
+        } catch (error) {
+            console.error("Error fetching cart items:", error);
+        }
+    }, [user?.id]);
+    useEffect(() => {
+        if (user?.id) fetchCartItems();
+    }, [user?.id, fetchCartItems]);
     const handleScroll = () => {
         if (window.scrollY > 100) {
             setIsScrolled(true);
@@ -71,7 +88,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
 
                                     </div>
-                                    <div className="desktop-cart-wrapper hdt-cart"><Link to={"/gio-hang"}><FontAwesomeIcon icon={faCartShopping} className='mx-1' /><span>0</span></Link>
+                                    <div className="desktop-cart-wrapper hdt-cart"><Link to={"/gio-hang"}><FontAwesomeIcon icon={faCartShopping} className='mx-1' /><span>{cartItems.length}</span></Link>
                                     </div>
                                 </div>
 
@@ -84,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                     <header className='header d-flex flex-row container'>
                         <div className={`d-flex w-100 flex-row justify-content-between` }>
                             <div className="nav-logo ">
-                                <img className="logo" src="logo.png" alt="" />
+                                
                             </div>
                             <div className='navbar-left'>
 
@@ -97,12 +114,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                         </li>
                                     ))}
                                 </ul>
-                                <div className='search-nav align-items-center d-flex'>
-                                    <Link to={"#"}><FontAwesomeIcon icon={faSearch} style={{ fontSize: "1.2rem" }} className='mx-1' /></Link>
-
+                                <div className='search-nav align-items-center d-flex' style={{width:"20px"}}>
+                                    <Link to={"#"}><FontAwesomeIcon icon={faSearch} style={{ fontSize: "1.2rem" }} onClick={()=>setOnSearch(!onSearch)} className='mx-1' /></Link>
+                                    <div className={`ggggg ${onSearch?"":"d-none"}`}><SearchInput/></div>
                                 </div>
                                 <div className="mt-2 pt-1 ps-3">
                                 {isAuthenticated && isScrolled ?  (
+                                    <div className='d-flex'>
                                             <div className='user me-1'>
                                                 
                                                 <p>{user ? `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}` : ""}</p>
@@ -116,7 +134,9 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                                     </div>
                                                 </div>
                                             </div>
-
+                                             <div className="desktop-cart-wrapper hdt-cart"><Link to={"/gio-hang"}><FontAwesomeIcon icon={faCartShopping} className='mx-1' /><span>{cartItems.length}</span></Link>
+                                    </div>
+                                    </div>
                                         ) : (<>
                                            
                                             </>)

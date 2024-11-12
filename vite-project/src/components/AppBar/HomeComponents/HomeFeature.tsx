@@ -5,8 +5,8 @@ const HomeFeature = () => {
     <div className="home__feature">
       <div className="container">
         <div className="row text-center">
-            <div className="section-title display-2 fw-normal">
-            Sản Phẩm Nổi Bật
+            <div className="section-title">
+             <h2 className='display-4'>Sản Phẩm Nổi Bật</h2>
             </div>
             <div className="section-content">
                 

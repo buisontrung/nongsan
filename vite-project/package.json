@@ -22,7 +22,9 @@
     "react-cookie": "^7.2.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
+    "react-search-autocomplete": "^8.5.2",
     "react-slick": "^0.30.2",
+    "react-toastify": "^10.0.6",
     "sass": "^1.79.1",
     "slick-carousel": "^1.8.1",
     "vite-project": "file:"

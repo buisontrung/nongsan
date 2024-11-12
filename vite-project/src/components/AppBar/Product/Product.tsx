@@ -20,7 +20,7 @@ const Product1 = () => {
     const [product, setProduct] = useState<Product>();
     const {user} = useAuth();
     const [recommend, setRecommend] = useState<Product[]>([]);
-    const [choose,setChoose] = useState(1);
+    const [choose,setChoose] = useState<number|undefined>();
     const [tab, setTab] = useState(1);
     const params = useParams<{ id: string |undefined }>();
     const [quantity, setQuantity] = useState(1);
@@ -28,40 +28,59 @@ const Product1 = () => {
     const price = product?.productVariantDTOs
     .find(varian => varian.id === choose)?.unitPrice; 
     const totalQuantity = product?.productVariantDTOs
-    .filter(varian => varian.id === choose) // Lọc biến thể có id bằng với choose
-    .flatMap(varian => varian.productInventorySuppliers) // Lấy danh sách các nhà cung cấp từ biến thể
-    .reduce((total, supplier) => total + supplier.quantity, 0) || 0; // Tính tổng số lượng
+    .filter(varian => varian.id === choose) 
+    .flatMap(varian => varian.productInventorySuppliers) 
+    .reduce((total, supplier) => total + supplier.quantity, 0) || 0; 
+    const product1 = product?.productVariantDTOs
+    .filter(varian => varian.id === choose) 
+    
     useEffect(()=>{
-        axios.get(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/user=${user?.id}&productVarianId=${choose}`)
+        console.log(1);
+        
+        if(choose){
+            axios.get(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/user=${user?.id}&productVarianId=${choose}`)
         .then(res=>{
             setCartItem(res.data)
+           
             
         }).catch(err=>{
             console.log(err)
         })
+        }
     },[choose,user?.id])
     const handleAddtoCart = () => {
-        if (choose === undefined || !product?.productVariantDTOs[choose]) {
-            console.error("No variant selected or variant not found.");
+        
+        if (choose === undefined ) {
+            alert("bạn chưa chọn quy cách");
             return;
         }
         
         if ((cartItem?.quantity ?? 0) + quantity > totalQuantity) {
-            alert("Không đủ số lượng");
-        } else {
-            axios.post(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/add`, {
-                id: 0,
-                userId: user?.id,
-                quantity: quantity,
-                price: product.productVariantDTOs[choose].unitPrice, // Ensure this accesses the actual price property
-            })
-            .then(res => {
-                console.log("Item added to cart:", res.data);
-            })
-            .catch(err => {
-                console.error("Error adding item to cart:", err);
-            });
-            alert("Thành công");
+            
+            alert(`bạn đã có ${cartItem?.quantity} số lượng trong giỏ hàng nên không thể thêm ${quantity}`);
+            return;
+        } else if(product1){
+            
+            
+                
+                axios.post(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/add`, {
+                    id: cartItem?.id || 0,
+                    userId: user?.id,
+                    quantity: quantity,
+                    productVarianId:product1[0].id,
+                    price: product1[0].unitPrice, // Ensure this accesses the actual price property
+                })
+                .then(res => {
+                    console.log("Item added to cart:", res.data);
+                    setCartItem(res.data);
+                    alert("Thành công");
+                })
+                .catch(err => {
+                    console.error("Error adding item to cart:", err);
+                });
+                
+            
+            
 
         }
         
@@ -165,7 +184,7 @@ const Product1 = () => {
                                     <div className="select-wrap d-flex">
                                         
                                             {product?.productVariantDTOs.map(pVarian =>{
-                                                return (<div  className="n-sd swatch-element mx-2">
+                                                return (<div  className="n-sd swatch-element mx-2" key={pVarian.id}>
                                                 
                                                 <input className="variant-0 input-product d-none"  type="radio" name="option1" value="Hộp-250gr" checked={undefined} />
                                             <label htmlFor="" className={pVarian.id == choose?"sd":""} onClick={()=>{setChoose(pVarian.id)}}>

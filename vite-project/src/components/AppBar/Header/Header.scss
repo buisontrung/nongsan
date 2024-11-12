@@ -55,12 +55,16 @@
 }
 .navbar-left{
     display: flex;
+    a:hover{
+        color: #ccc
+    }
 
 }
 .search-nav {
     margin: 0;
     padding: 0;
     display: inline-block;
+    position: relative;
 }
 
 .logo{
@@ -158,4 +162,9 @@
 }
 .user-infor{
     border-bottom:1px solid #ddd ;
+}
+.ggggg{
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0px;
 }

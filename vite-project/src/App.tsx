@@ -12,7 +12,14 @@ import ProductDetail from './pages/Product/ProductDetail';
 import ShoppingCart from './pages/ShoppingCart/ShoppingCart';
 import ShoppingCartProvider from './components/Context/ShoppingCartContext';
 
+import './global.scss'
+import Checkout from './pages/Checkout/Checkout';
+
+
 const App = () => {
+  
+  
+  
   return (
     <AuthProvider>
     <ShoppingCartProvider storeKey='cart'>
@@ -27,6 +34,7 @@ const App = () => {
         <Route path='/danh-muc-bai-viet' element={<Post/>}/>
         <Route path='/danh-muc-bai-viet/:id' element={<PostDetail/>}/> 
         <Route path='/gio-hang' element={<ShoppingCart/>}/>
+        <Route path='/check-out' element={<Checkout/>}/>
       </Routes>
     </Router>
     </ShoppingCartProvider>

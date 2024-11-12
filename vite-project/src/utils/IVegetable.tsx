@@ -42,6 +42,7 @@ interface Category {
     id?:string,
     firstName?:string,
     lastName?:string,
+    phoneNumber:string,
   }
   interface contenttype{
     title:string,
@@ -73,6 +74,17 @@ interface Category {
     },
     product: Product
   }
+  interface Address{
+    id:number,
+    userNameAddress: string,
+    phoneNumberAddress: string,
+    city: string,
+    district: string,
+    wardsCommunes: string,
+    addressName: string,
+    userId: string,
+    isPrimary: boolean
+  }
   interface ShoppingCartItem{
     id:number,
     userId:string,
@@ -93,6 +105,14 @@ interface Category {
     imageUrl:string,
     productId:string,
   }
+  interface Province {
+    id: string;
+    name: string;
+  }
+interface ListProvince{
+  total:number,
+  data: Province[]
+}
   // Sử dụng export type để xuất các interface
-  export type { Category, Product,Login,comment,post,user,ShoppingCartType,ShoppingCartItem};
+  export type { Category, Product,Login,comment,post,user,ShoppingCartType,ShoppingCartItem,Address,Province,ListProvince};
   

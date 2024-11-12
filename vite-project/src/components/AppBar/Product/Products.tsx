@@ -92,8 +92,8 @@ const Products = () => {
     return (
         <>
             <header><h1>{categoryName}</h1></header>
-            <p className='result-count'>Hiển thị {products.length}-{quantity} kết quả</p>
-            <form>
+            <p className='result-count'>Hiển thị {products.length}/{quantity} kết quả</p>
+            <form className='text-end'>
                 <select 
                     name="orderby" 
                     className="orderby" 
@@ -110,7 +110,7 @@ const Products = () => {
             </form>
             <div className='row'>
                 {products.map((product) => (
-                    <div className="col-md-auto product-item" key={product.id}>
+                    <div className="col3 product-item" key={product.id}>
                         <div className="product-img text-center">
                             <a href="#/">
                                 <img src={`https://localhost:7000/product/images/${product.imageUrl}`} alt={product.productName} />

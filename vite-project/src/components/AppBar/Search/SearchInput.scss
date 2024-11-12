@@ -1,0 +1,21 @@
+.sc-gEvEer {
+    max-height: 300px; /* Đặt chiều cao tối đa */
+    overflow-y: auto;  /* Cuộn dọc */
+    overflow-x: auto;  /* Cuộn ngang nếu cần */
+  }
+  .foHunf .wrapper {
+    position: relative !important;;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    
+    border: 1px solid rgb(223, 225, 229);
+    border-radius: 4px;
+    background-color: rgb(242, 242, 242);
+    color: rgb(51, 51, 51);
+    font-size: 16px;
+    font-family: Arial;
+    z-index: 9999999999999999999999999999999999999999999999999999999999 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}

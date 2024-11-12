@@ -1,7 +1,26 @@
 
+
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const Register = () => {
+    // const [username,setUsername] = useState("");
+    // const [password,setPassword] = useState("")
+    // const [email,setEmail] = useState("");
+     const [check,setCheck] = useState<boolean>(false);
+    // const handleCreateOtp = ()=>{
+    //     axios.post(`${APIENDPOINT}/auth/api/Auth/VerifyOtp`,{
+            
+    //     })
+    //     .then(res=>{
+    //         if(res.status==200){
+    //             alert("Kiem Tra emai")
+    //         }
+    //     })
+    //     .catch(err=>{
+    //         console.log(err);
+    //     })
+    // }
     return (
         <section className="p-3 p-md-4 p-xl-5 login-page">
             <div className="container">
@@ -34,6 +53,17 @@ const Register = () => {
                                         <label htmlFor="email" className="form-label">Email <span className="text-danger">*</span></label>
                                         <input type="email" className="form-control" name="email" id="email" required placeholder="example@gmail.com"/>
                                     </div>
+                                    <div className="col-8">
+                                        <label htmlFor="otp" className="form-label">OTP <span className="text-danger">*</span></label>
+                                        <div className='d-flex'>
+                                            <input type="number" className="form-control" name="otp" id="otp" required placeholder="Ma OTP" /> 
+                                            {!check?<button className='ms-3' style={{padding:"0 20px",backgroundColor:"blue",borderRadius:"5px",whiteSpace:'nowrap'}} onClick={()=>setCheck(true)}>Gửi mã</button>
+                                            :<button className='ms-3' style={{padding:"0 20px",backgroundColor:"blue",borderRadius:"5px",whiteSpace:'nowrap'}} onClick={()=>setCheck(false)}>Kiểm tra</button>
+                                            }
+                                            
+                                        </div>
+                                        
+                                    </div>
                                     <div className="col-12">
                                         <div className="form-check">
                                             <input className="form-check-input" type="checkbox" value="" name="remember_me" id="remember_me" />
@@ -44,7 +74,7 @@ const Register = () => {
                                     </div>
                                     <div className="col-12">
                                         <div className="d-grid">
-                                            <button className="btn bsb-btn-xl bg-login" type="submit">Đăng nhập ngay</button>
+                                            <button className="btn bsb-btn-xl bg-login" type="submit">Đăng ký</button>
                                         </div>
                                     </div>
                                 </div>

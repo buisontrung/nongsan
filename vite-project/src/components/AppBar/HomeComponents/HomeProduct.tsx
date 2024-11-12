@@ -25,6 +25,7 @@ const HomeProduct = () => {
   useEffect(() => {
     axios.get(`${APIENDPOINT}/product/api/product/getall`)
       .then(res => {
+        console.log(res.data)
         const grouped = res.data.reduce((arr: Record<number, Product[]>, product: Product) => {
           if (!arr[product.productCategoryId]) {
             arr[product.productCategoryId] = [];
@@ -39,7 +40,7 @@ const HomeProduct = () => {
         console.log(err);
       })
   }, [])
-
+  
   return (
     <div className='home__products'>
       <div className="pt-5 pb-5">
@@ -86,7 +87,7 @@ const HomeProduct = () => {
                               </Link>
                             </div>
                             <div className="product-price">
-                              <span>{product.price} VNĐ</span>
+                              <span>{product.productVariantDTOs && product.productVariantDTOs[0].unitPrice?product.productVariantDTOs[0].unitPrice:product.price} VNĐ</span>
                             </div>
                             <div className='text-center product-action'>
                             <Link to="#">
