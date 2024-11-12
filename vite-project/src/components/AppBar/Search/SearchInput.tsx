@@ -5,8 +5,10 @@ import { Product } from '../../../utils/IVegetable'
 import axios from 'axios'
 import { APIENDPOINT } from '../../../utils/constant'
 import './SearchInput.scss'
+import { useNavigate } from 'react-router-dom'
 
 const SearchInput:React.FC = () => {
+    const navigate = useNavigate();
     const [products,setProducts] = useState<Product[]>([])
     useEffect(() => {
         axios.get(`${APIENDPOINT}/product/api/product/getall`)
@@ -19,10 +21,12 @@ const SearchInput:React.FC = () => {
             console.log(err);
           })
       }, [])
-    // const handleOnSelect = (item: Product) => {
-    //     console.log("Item selected:", item)
-    //     alert(`Bạn đã chọn: ${item.pname}`)
-    //   }
+     const HandleOnSelect = (item: Product) => {
+        
+      
+      navigate(`san-pham/${item.id}`)
+      
+      }
     
     //   // Hàm được gọi khi người dùng tìm kiếm
     //   const handleOnSearch = (string: string, results: Item[]) => {
@@ -44,12 +48,12 @@ const SearchInput:React.FC = () => {
         );
     }
   return (
-    <div style={{ width: "400px" }}>
+    <div style={{ width: "400px" }} className='width-search'>
       
       <ReactSearchAutocomplete
         items={products}
         // onSearch={handleOnSearch}
-        // onSelect={handleOnSelect}
+         onSelect={HandleOnSelect}
         // onClear={handleOnClear}
         showIcon={false}
         fuseOptions={{ keys: ["productName"] }}
