@@ -100,9 +100,10 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
                     <header className='header d-flex flex-row container'>
                         <div className={`d-flex w-100 flex-row justify-content-between` }>
-                            <div className="nav-logo ">
-                                
-                            </div>
+                            <div className='search-nav align-items-center d-flex'>
+                                    <Link to={"#"}><FontAwesomeIcon icon={faSearch} style={{ fontSize: "1.2rem" }} onClick={()=>setOnSearch(!onSearch)} className='mx-1' /></Link>
+                                    <div className={`ggggg ${onSearch?"":"d-none"}`}><SearchInput/></div>
+                                </div>
                             <div className='navbar-left'>
 
                                 <ul className="navbar-main mb-2 mb-lg-0 fs-6">
@@ -114,10 +115,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
                                         </li>
                                     ))}
                                 </ul>
-                                <div className='search-nav align-items-center d-flex' style={{width:"20px"}}>
-                                    <Link to={"#"}><FontAwesomeIcon icon={faSearch} style={{ fontSize: "1.2rem" }} onClick={()=>setOnSearch(!onSearch)} className='mx-1' /></Link>
-                                    <div className={`ggggg ${onSearch?"":"d-none"}`}><SearchInput/></div>
-                                </div>
+                                
                                 <div className="mt-2 pt-1 ps-3">
                                 {isAuthenticated && isScrolled ?  (
                                     <div className='d-flex'>

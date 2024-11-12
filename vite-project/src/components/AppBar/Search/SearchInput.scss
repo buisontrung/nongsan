@@ -19,3 +19,13 @@
     margin: 0 !important;
     padding: 0 !important;
 }
+@media screen and (min-width: 768px) {
+  .width-search{
+    width: 400px;
+  }
+}
+@media screen and (max-width: 1280px) {
+  .width-search{
+    width: 120px;
+  }
+}
