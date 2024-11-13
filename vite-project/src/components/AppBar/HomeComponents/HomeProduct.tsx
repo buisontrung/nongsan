@@ -13,6 +13,9 @@ const HomeProduct = () => {
   const openTab = (categoryId: number) => {
     setActiveTab(categoryId); // Cập nhật tab active
   };
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString('vi-VN'); // Vietnamese formatting with dot separators
+  };
   useEffect(() => {
     axios.get(`${APIENDPOINT}/product/api/productcategory/getall`)
       .then(res => {
@@ -87,7 +90,7 @@ const HomeProduct = () => {
                               </Link>
                             </div>
                             <div className="product-price">
-                              <span>{product.productVariantDTOs && product.productVariantDTOs[0].unitPrice?product.productVariantDTOs[0].unitPrice:product.price} VNĐ</span>
+                              <span>{product.productVariantDTOs && product.productVariantDTOs[0].unitPrice?product.productVariantDTOs[0].unitPrice:formatPrice(product.price)} VNĐ</span>
                             </div>
                             <div className='text-center product-action'>
                             <Link to="#">

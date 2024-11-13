@@ -97,7 +97,34 @@ const ShoppingCart = () => {
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
     };
-
+    const handleIncreaseQuantity = (index: number) => {
+        setCartItems((prevItems) => {
+            const updatedItems = [...prevItems];
+            const maxQuantity = updatedItems[index].product.productVariantDTOs[0].productInventorySuppliers[0].quantity;
+    
+            if (updatedItems[index].shoppingCart.quantity >= maxQuantity) {
+                alert("Số lượng vượt quá giới hạn cho phép!");
+                return updatedItems;
+            }else{
+                updatedItems[index].shoppingCart.quantity += 1;
+            }
+               
+            
+            
+            return updatedItems;
+        });
+    };
+    
+    const handleDecreaseQuantity = (index: number) => {
+        setCartItems((prevItems) => {
+            const updatedItems = [...prevItems];
+            if (updatedItems[index].shoppingCart.quantity > 1) {
+                updatedItems[index].shoppingCart.quantity -= 1;
+            }
+            return updatedItems;
+        });
+    };
+    console.log(cartItems)
     return (
         <>
             <NavDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
@@ -174,11 +201,11 @@ const ShoppingCart = () => {
                                                                     <div className="d-flex flex-row align-items-center">
                                                                         <div className='d-flex'>
                                                                             <button className="btn btn-link px-1">
-                                                                                <FontAwesomeIcon icon={faMinus} />
+                                                                                <FontAwesomeIcon icon={faMinus} onClick={() => handleDecreaseQuantity(index)}/>
                                                                             </button>
-                                                                            <input style={{ width: "40px" }} value={item.shoppingCart.quantity} type="number" className="form-control form-control-sm" />
+                                                                            <input style={{ width: "50px" }} value={item.shoppingCart.quantity} type="number" className="form-control form-control-sm" />
                                                                             <button className="btn btn-link px-1">
-                                                                                <FontAwesomeIcon icon={faPlus} />
+                                                                                <FontAwesomeIcon icon={faPlus}  onClick={() => handleIncreaseQuantity(index)} />
                                                                             </button>
                                                                         </div>
                                                                         <div>
