@@ -36,7 +36,7 @@ const Footer = () => {
                                 <div className="footer-info">
                                     <h3>LIÊN HỆ</h3>
                                     <ul>
-                                        <li>179, đường Võ Văn Kiệt, P An Thới, Q Bình Thủy, TP Cần Thơ</li>
+                                        <li>43/99/15 đường Trần Duy Hưng, TP Hà Nội</li>
                                     </ul>
                                 </div>
                             </div>
