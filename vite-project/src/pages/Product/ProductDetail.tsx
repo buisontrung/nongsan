@@ -7,13 +7,13 @@ import BackToTop from '../../components/AppBar/BackTop/BackToTop'
 import Contact from '../../components/AppBar/ContactIcon/ContactButton'
 
 import Product1 from '../../components/AppBar/Product/Product'
-import { useCart } from '../../components/Context/useCartOverlay'
+
 
 
 const ProductDetail = () => {
-  const { cartItems } = useCart();
+
   
-    console.log('Cart items updated', cartItems);
+
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     

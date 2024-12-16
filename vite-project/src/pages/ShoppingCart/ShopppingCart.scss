@@ -23,7 +23,12 @@
     }
     
 }
-
+.card-1{
+    border: 1px solid #d3ced2;
+    border-radius: 1px;
+    background-color: #fff;
+    padding: 15px 40px;
+}
 input[type=checkbox]
 {
     appearance: none; /* Loại bỏ checkbox mặc định */
@@ -33,6 +38,13 @@ input[type=checkbox]
   border: 1px solid #d3ced2;
   
   border-radius: 2px;
+}
+.card {
+    border: 1px solid #d3ced2 !important;
+    border-radius: 2px ;
+}
+.rounded-3{
+    border-radius: 2px !important;
 }
 input[type="checkbox"]:checked {
     background-color: #86bc42;

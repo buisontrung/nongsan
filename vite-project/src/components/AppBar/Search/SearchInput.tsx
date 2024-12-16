@@ -24,7 +24,7 @@ const SearchInput:React.FC = () => {
      const HandleOnSelect = (item: Product) => {
         
       
-      navigate(`san-pham/${item.id}`)
+      navigate(`/san-pham/${item.id}`)
       
       }
     
@@ -40,7 +40,7 @@ const SearchInput:React.FC = () => {
     //   }
     const formatResult = (item:Product) => {
         return (
-          <div style={{ padding: '5px', backgroundColor: '#f9f9f9', borderRadius: '5px' }}>
+          <div style={{ padding: '5px', backgroundColor: '#f9f9f9', borderRadius: '5px',cursor:"pointer" }}>
             <img src={`${APIENDPOINT}/product/images/${item.imageUrl}`} alt="" style={{width:"50px", height:"50px",marginRight:"5px"}}/>
             <strong>{item.productName}</strong>
             

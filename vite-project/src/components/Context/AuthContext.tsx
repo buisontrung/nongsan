@@ -28,6 +28,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (rftoken) {
                 setIsAuthenticated(true); // Tạm thời đặt xác thực thành true
                 const savedUser = sessionStorage.getItem("user");
+
                 if (savedUser) {
                     setCurrentUser(JSON.parse(savedUser));
                 } else {
@@ -44,11 +45,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                         console.log("Error fetching user data:", error);
                     }
                 }
-                if (!accessToken) {
+                if (!accessToken || accessToken === 'undefined' || accessToken === '') {
                     try {
                         const response = await axios.post(`${APIENDPOINT}/Auth/api/Auth/GenerateToken?refreshToken=${rftoken}`);
                         const newAccessToken = response.data;
-                        setCookie('accessToken', newAccessToken, { path: '/', maxAge: 60 });
+                        setCookie('accessToken', newAccessToken, { path: '/', maxAge: 1800 });
                     } catch (error) {
                         console.error('Error generating token:', error);
                         setIsAuthenticated(false);
@@ -82,7 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         removeCookie('accessToken');
         removeCookie('refreshToken');
         sessionStorage.removeItem("user")
-        
+        setCurrentUser(null)
         // Đặt trạng thái đăng xuất
         setIsAuthenticated(false);
     };

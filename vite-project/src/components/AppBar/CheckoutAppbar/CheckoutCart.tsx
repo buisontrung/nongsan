@@ -1,4 +1,4 @@
-import { APIENDPOINT } from "../../../utils/constant";
+import { APIENDPOINT, formatPrice } from "../../../utils/constant";
 import {  ShoppingCartType } from "../../../utils/IVegetable"
 
 interface CheckoutCartProps {
@@ -17,7 +17,7 @@ const CheckoutCart: React.FC<CheckoutCartProps> = ({ cartItems }) => {
           <div className="col-4">
             <h2 className="zgWBzz">Sản phẩm</h2>
           </div>
-          <div className="col-2"></div>
+          <div className="col-2 text-end">Phân loại</div>
           <div className="col-2 text-end">Đơn giá</div>
           <div className="col-2 text-end">Số lượng</div>
           <div className="col-2 text-end">Thành tiền</div>
@@ -53,10 +53,10 @@ const CheckoutCart: React.FC<CheckoutCartProps> = ({ cartItems }) => {
                     <div className="col-2 text-center d-flex align-items-center">
                       <span className="Ev9jhR">Loại: {item.product.productVariantDTOs[0].variantName}</span>
                     </div>
-                    <div className="col-2 d-flex align-items-center justify-content-end">{item.shoppingCart.price}</div>
-                    <div className="col-2 d-flex align-items-center justify-content-end">{item.shoppingCart.quantity}</div>
-                    <div className="col-2 d-flex align-items-center justify-content-end">
-                      {item.shoppingCart.quantity * item.shoppingCart.price}
+                    <div className="col-2 d-flex align-items-center justify-content-start">{formatPrice(item.shoppingCart.price,0)} VND</div>
+                    <div className="col-2 d-flex align-items-center justify-content-start">{item.shoppingCart.quantity}</div>
+                    <div className="col-2 d-flex align-items-center justify-content-start">
+                      {formatPrice(item.shoppingCart.quantity, item.shoppingCart.price)} VND
                     </div>
                   </div>
                 </div>

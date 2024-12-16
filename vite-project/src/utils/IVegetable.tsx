@@ -15,6 +15,9 @@ interface Category {
     isActive: boolean;
     productCategoryId: number;
     price: number;
+    minPrice:number;
+    maxPrice:number;
+    priceSale:number;
     productImageDTOs:ProductImage[],
     productCategoryDTO?:Category,
     productVariantDTOs: productVariant[]
@@ -113,6 +116,62 @@ interface ListProvince{
   total:number,
   data: Province[]
 }
+interface Promotion {
+  id: number;
+  promotionCode: string;
+  description: string;
+  discountPercentage: number;
+  quantity: number;
+  validFrom: string; // ISO date string
+  validTo: string;   // ISO date string
+  isActive: boolean;
+}
+
+interface Item {
+  productId: number;
+  quantity: number;
+  price: number;
+}
+
+interface Order {
+  id:number,
+  code: string;
+  customerName: string;
+  phone: string;
+  address: string;
+  promotionId: number;
+  userId: string;
+  totalAmount: number;
+  discountAmount: number;
+  quantity: number;
+  paymentMethodId: number;
+  isPayment: boolean;
+  status:number,
+  createDate:string,
+
+}
+interface OrderDetail{
+  id:number,
+  quantity:number,
+  price:number,
+  productId:number,
+  product: Product
+}
+interface Review{
+  id:number,
+  content:string,
+  userId:string,
+  productId:number,
+  userName:string,
+  rating:number,
+  createAt:string,
+
+}
+interface RatingCount{
+  rating:number,
+  count:number
+
+}
   // Sử dụng export type để xuất các interface
-  export type { Category, Product,Login,comment,post,user,ShoppingCartType,ShoppingCartItem,Address,Province,ListProvince};
+  export type { RatingCount,Review,Category, Product,Login,comment,post,user,ShoppingCartType,ShoppingCartItem,Address,Province,ListProvince,Order,Item,Promotion,OrderDetail};
   

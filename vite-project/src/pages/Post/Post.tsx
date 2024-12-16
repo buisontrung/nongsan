@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import Header from '../../components/AppBar/Header/Header'
 import NavDrawer from '../../components/AppBar/NavDrawer/NavDrawer'
 import './Post.scss'
@@ -16,7 +16,9 @@ const Post = () => {
     const [posts, setPosts] = useState<post[]>([]);
     useEffect(() => {
         const fetchPosts = async () => {
+            
             try {
+
                 const response = await axios.get(`${APIENDPOINT}/post/api/post/getall`);
                 setPosts(response.data);
                 
@@ -24,6 +26,7 @@ const Post = () => {
             } catch (error) {
                 console.error('Lỗi khi lấy dữ liệu:', error);
             }
+
         };
 
         fetchPosts();
@@ -42,7 +45,7 @@ const Post = () => {
                         {posts.map((post, index) => {
                             return (<div key={index} className="col-md-6 col-lg-4 mt-5 wow fadeInUp" data-wow-delay=".2s" >
                                 <div className="blog-grid">
-                                    <div className="blog-grid-img position-relative"><img alt="img" src={post.images[0].url} /></div>
+                                    <div className="blog-grid-img position-relative"><img alt="img" src={post.images[0].url} style={{minHeight:"290px"}} loading="lazy" /></div>
                                     <div className="blog-grid-text p-4">
                                         <h3 className="h5 mb-3"><Link to={`/danh-muc-bai-viet/${post.id}`}>{post.title}</Link></h3>
                                         

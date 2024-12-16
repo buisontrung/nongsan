@@ -18,9 +18,38 @@
        
     }
 }
+.star-bg{
+    background-color: #e9ffcd;
+    border: 1px solid #a6e25c;
+    padding: 30px 20px;
+}
+.star {
+
+    color: lightgray;
+    transition: color 0.2s ease;
+  }
+  .star1{
+    color: gold;
+    transition: color 0.2s ease;
+  }
+  .stars{
+    span{
+       
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: start;
+    }
+  }
+  .star.active5{
+    color: gold;
+  }
 .star{
 
-    margin-right: 5px;
+    padding-right: 5px;
+}
+.star:hover ~ .star,
+.star:hover {
+  color: #86bc42;
 }
 .form-email,.form-auth{
     input{
@@ -52,7 +81,7 @@ ul.slick-dots.slick-thumb{
 }
 .swatch-element label.sd {
     position: relative;
-    border: 1px solid #e4393c;
+    border: 2px solid #86bc42;
     padding: 5px;
 }
 .swatch .img-check {
@@ -101,6 +130,10 @@ ul.slick-dots.slick-thumb{
     border-radius: 1px;
     cursor: pointer;
 }
+.not-allowed {
+    pointer-events: auto! important;
+    cursor: not-allowed! important;
+}
 .btn-solid-primary {
     background: #86bc42;
     outline: 0;
@@ -123,4 +156,22 @@ ul.slick-dots.slick-thumb{
 .col3 {
     flex: 0 0 auto;
     width: 32%;
+}
+.review-tab.active4{
+    border-color: #74a43a;
+}
+.review-tab{
+    padding: 1px 20px;
+    border: 1px solid #d3ced2;
+    background-color: #fff;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.col8{
+    flex: 0 0 auto;
+    width: 71%;
+}
+.col4{
+    flex: 0 0 auto;
+    width: 27%;
 }

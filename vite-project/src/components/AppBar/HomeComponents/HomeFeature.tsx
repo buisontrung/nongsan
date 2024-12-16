@@ -24,7 +24,7 @@ const HomeFeature = () => {
                             <div className="product-review">
                                 <div className="product-price">
                                     <div className="current-price">
-                                        19000 VNĐ
+                                        19.000 VNĐ
                                     </div>
                                 </div>
                             </div>

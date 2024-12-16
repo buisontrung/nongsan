@@ -232,4 +232,10 @@ button.VNkBIJ.div-style {
     background: transparent; /* Ẩn phần "thumb" (nút cuộn) */
   }
   
-
+.payment-active{
+    background-color: #86bc42 !important;
+    color: #fff;
+}
+.payment-active:hover{
+    background-color: #77a93b !important;
+}

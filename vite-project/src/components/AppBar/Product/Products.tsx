@@ -7,7 +7,7 @@ import './Product.scss'
 const Products = () => {
     const location = useLocation();
     const categoryName = location.state?.name;
-    const id = location.state?.id || '';
+    const id = location.state?.id || 0;
     const [products, setProducts] = useState<Product[]>([]);
     const [quantity,setQuantity]= useState(0);
     const [orderbyIndex, setOrderbyIndex] = useState(1);
@@ -27,7 +27,9 @@ const Products = () => {
             }
         };
 
-        fetchQuantity();
+        
+            fetchQuantity()
+        
     },[id])
     // Function to get the appropriate API endpoint for sorting
     
@@ -52,7 +54,7 @@ const Products = () => {
                     endpoint += '&getbyorder=price';
                     break;
                 case 6:
-                    endpoint += '&getbyorder=price_desc';
+                    endpoint += '&getbyorder=price-desc';
                     break;
                 default:
                     endpoint += '';
@@ -63,25 +65,32 @@ const Products = () => {
         const fetchProducts = async () => {
             try {
                 const endpoint = getSortingEndpoint();
-                const res = await axios.get(endpoint+`&pz=3&pn=${pageNumber}`);
+                const res = await axios.get(endpoint+`&pz=9&pn=${pageNumber}`);
                 setProducts(res.data);
+                console.log(res.data)
+                
             } catch (err) {
                 console.log(err);
             }
         };
         
-        fetchProducts();
+       
+            fetchProducts();
+        
     }, [orderbyIndex, id,pageNumber]);
     const handlePageChange = (page: number) => {
         setPageNumber(page);
 
     };
+    const formatPrice = (price: number): string => {
+    return price.toLocaleString('vi-VN'); // Vietnamese formatting with dot separators
+  };
     const renderPaginationItems = () => {
         const items = [];
-        for (let i = 0; i <= quantity/3; i+=1) {
+        for (let i = 0; i <= quantity/9; i+=1) {
             const a = i+1;
             items.push(
-                <li key={a} onClick={() => handlePageChange(a)} className={a === pageNumber ? 'active' : ''}>
+                <li key={a} onClick={() => handlePageChange(a)} className={a === pageNumber ? 'active' : 'page'}>
                     {a}
                 </li>
             );
@@ -92,7 +101,7 @@ const Products = () => {
     return (
         <>
             <header><h1>{categoryName}</h1></header>
-            <p className='result-count'>Hiển thị {products.length}/{quantity} kết quả</p>
+            <div className="d-flex justify-content-between"><p className='result-count'>Hiển thị {products.length}/{quantity} kết quả</p>
             <form className='text-end'>
                 <select 
                     name="orderby" 
@@ -101,19 +110,17 @@ const Products = () => {
                     onChange={(e) => handleOrderbySubmit(Number(e.target.value))} // Handle select change
                 >
                     <option value="1">Thứ tự mặc định</option>
-                    <option value="2">Thứ tự theo mức độ phổ biến</option>
                     <option value="3">Thứ tự theo điểm đánh giá</option>
-                    <option value="4">Mới nhất</option>
                     <option value="5">Thứ tự theo giá: thấp đến cao</option>
                     <option value="6">Thứ tự theo giá: cao xuống thấp</option>
                 </select>
-            </form>
+            </form></div>
             <div className='row'>
                 {products.map((product) => (
                     <div className="col3 product-item" key={product.id}>
                         <div className="product-img text-center">
                             <a href="#/">
-                                <img src={`https://localhost:7000/product/images/${product.imageUrl}`} alt={product.productName} />
+                                <img src={`https://localhost:7000/product/images/${product.imageUrl}`} alt={product.productName} style={{width:"100%"}}  loading="lazy"/>
                             </a>
                         </div>
                         <div className="product-info">
@@ -121,7 +128,9 @@ const Products = () => {
                                 <Link to={`/san-pham/${product.id}`}>{product.productName}</Link>
                             </div>
                             <div className="product-price">
-                                <span>{product.price} VNĐ</span>
+                                <span style={{textDecoration:"line-through"}}>{product.minPrice?formatPrice(product.minPrice):""} VNĐ</span>
+                                <span style={{fontSize:"20px",fontWeight:"600"}}> - </span>
+                                <span >{formatPrice(product.priceSale |0)} VNĐ</span>
                             </div>
                             <div className="text-center product-action">
                                 <a href="#/">

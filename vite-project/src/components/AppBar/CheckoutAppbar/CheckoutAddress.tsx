@@ -7,7 +7,10 @@ import axios from "axios";
 import { APIENDPOINT } from "../../../utils/constant";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-const CheckoutAddress = () => {
+interface CheckoutAddressProps {
+    onActiveChange: (isActive: Address) => void; // Hàm callback nhận trạng thái "active"
+}
+const CheckoutAddress: React.FC<CheckoutAddressProps> = ({ onActiveChange }) => {
     const { user } = useAuth();
     const [address, setAddress] = useState<Address[]>([]);
     const [primaryAddress, setPrimaryAddress] = useState<Address | null>(null);
@@ -19,10 +22,11 @@ const CheckoutAddress = () => {
     const [wards, setWards] = useState<ListProvince | undefined>()
     const [selected, setSelected] = useState<number>();
     const [text, setText] = useState("");
-    const [addressName,setAddressName] = useState("")
-    const [userNameAddress,setUserNameAddress] = useState("")
-    const [phoneNumberAddress,setPhoneNumberAddress] = useState("")
+    const [addressName, setAddressName] = useState("")
+    const [userNameAddress, setUserNameAddress] = useState("")
+    const [phoneNumberAddress, setPhoneNumberAddress] = useState("")
     const [selectedValue, setSelectedValue] = useState<boolean>(false);
+
     useEffect(() => {
         const fetchAddresses = async () => {
             if (user?.id) {
@@ -33,6 +37,7 @@ const CheckoutAddress = () => {
                         axios.get('https://open.oapi.vn/location/provinces?page=0&size=63'),
                     ]);
                     setPrimaryAddress(primaryRes.data);
+                    onActiveChange(primaryRes.data);
                     setAddress(addressRes.data);
                     setSelected(primaryRes.data.id)
                     setProvinces(provincesRes.data);
@@ -66,10 +71,10 @@ const CheckoutAddress = () => {
     };
 
     const handleAddNewAddress = async () => {
-        
+
         try {
             const value = text.split(", ");
-            
+
             // Gửi yêu cầu API
             const res = await axios.post(`${APIENDPOINT}/auth/api/Address/add`, {
                 id: 0,
@@ -82,7 +87,7 @@ const CheckoutAddress = () => {
                 district: value[1],
                 wardsCommunes: value[2]
             });
-            
+
             // Kiểm tra dữ liệu trả về
             if (res && res.data) {
                 // Cập nhật địa chỉ chính nếu cần
@@ -91,23 +96,23 @@ const CheckoutAddress = () => {
                     setSelected(res.data.id);
                     console.log("Primary Address:", res.data); // Kiểm tra dữ liệu
                 }
-                
+
                 // Cập nhật danh sách địa chỉ
                 setAddress(prev => [...prev, res.data]);
             }
-        
+
             // Cập nhật bước sau khi thêm địa chỉ thành công
             setStep(1);
             toast.success("Thêm địa chỉ thành công!");
-        
+
         } catch (error) {
             // Xử lý lỗi
             console.error("Failed to update primary address", error);
             toast.error("Thêm địa chỉ thất bại!");
         }
-        
-            setStep(1); // Đóng cửa sổ nếu không có thay đổi
-        
+
+        setStep(1); // Đóng cửa sổ nếu không có thay đổi
+
     };
     const handleConfirm = async () => {
         if (selected && selected !== primaryAddress?.id) {
@@ -170,7 +175,7 @@ const CheckoutAddress = () => {
                     </div>
                 </div>
             </div>
-            {step && (
+            {step ? (
                 <div>
                     <div className="checkout-address">
                         <div className="checkout-address-bg"></div>
@@ -236,14 +241,14 @@ const CheckoutAddress = () => {
                                     <div className="pb-3 px-4 d-flex flex-wrap address-content">
                                         <div className="col-12 d-flex">
                                             <div className="col-5 mt-4">
-                                                <input type="text" placeholder="Tên" className="w-100 px-3 pt-1 pb-1" onChange={(e)=>{setUserNameAddress(e.target.value)}}/>
+                                                <input type="text" placeholder="Tên" className="w-100 px-3 pt-1 pb-1" onChange={(e) => { setUserNameAddress(e.target.value) }} />
                                             </div>
                                             <div className="col-2 mt-4">
 
                                             </div>
                                             <div className="col-5 mt-4">
-                                                <input type="text" placeholder="Số điện thoại" className="w-100 px-3 pt-1 pb-1" 
-                                                onChange={(e)=>{setPhoneNumberAddress(e.target.value)}}
+                                                <input type="text" placeholder="Số điện thoại" className="w-100 px-3 pt-1 pb-1"
+                                                    onChange={(e) => { setPhoneNumberAddress(e.target.value) }}
                                                 />
                                             </div>
                                         </div>
@@ -257,7 +262,7 @@ const CheckoutAddress = () => {
                                         <div className="w-100">
                                             <div className="col-12 mt-4">
                                                 <input type="text" placeholder="Địa chỉ cụ thể" className="w-100 px-3 pt-1 pb-3"
-                                                onChange={(e)=>{setAddressName(e.target.value)}}
+                                                    onChange={(e) => { setAddressName(e.target.value) }}
                                                 />
                                             </div>
 
@@ -323,7 +328,7 @@ const CheckoutAddress = () => {
                                         <div className="col-12 mt-3">
                                             <input
                                                 type="radio"
-                                                
+
                                                 checked={selectedValue}
                                                 onClick={() => setSelectedValue(!selectedValue)}
                                             />
@@ -341,7 +346,7 @@ const CheckoutAddress = () => {
                         </div>
                     </div>
                 </div>
-            )}
+            ):""}
             <ToastContainer
                 autoClose={2000} toastClassName="custom-toast-container"
             />

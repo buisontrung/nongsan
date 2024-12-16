@@ -10,34 +10,36 @@ import Post from './pages/Post/Post';
 import PostDetail from './pages/Post/PostDetail';
 import ProductDetail from './pages/Product/ProductDetail';
 import ShoppingCart from './pages/ShoppingCart/ShoppingCart';
-import ShoppingCartProvider from './components/Context/ShoppingCartContext';
+
 
 import './global.scss'
 import Checkout from './pages/Checkout/Checkout';
+import Account from './pages/Account/Account';
+
+
 
 
 const App = () => {
-  
-  
-  
   return (
     <AuthProvider>
-    <ShoppingCartProvider storeKey='cart'>
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path='/gioi-thieu' element={<Introduce />} />
-        <Route path='/danh-muc-san-pham/*' element={<ProductCategory/>}/>
-        <Route path='/san-pham/:id' element={<ProductDetail/>}/>
-        <Route path='/dang-nhap' element={<Login/>}/>
-        <Route path='/dang-ki' element={<Register/>}/>
-        <Route path='/danh-muc-bai-viet' element={<Post/>}/>
-        <Route path='/danh-muc-bai-viet/:id' element={<PostDetail/>}/> 
-        <Route path='/gio-hang' element={<ShoppingCart/>}/>
-        <Route path='/check-out' element={<Checkout/>}/>
-      </Routes>
-    </Router>
-    </ShoppingCartProvider>
+      
+        <Router>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/gioi-thieu" element={<Introduce />} />
+              <Route path="/danh-muc-san-pham/*" element={<ProductCategory />} />
+              <Route path="/san-pham/:id" element={<ProductDetail />} />
+              <Route path="/dang-nhap" element={<Login />} />
+              <Route path="/dang-ki" element={<Register />} />
+              <Route path="/danh-muc-bai-viet" element={<Post />} />
+              <Route path="/danh-muc-bai-viet/:id" element={<PostDetail />} />
+              <Route path="/gio-hang" element={<ShoppingCart />} />
+              <Route path="/check-out" element={<Checkout />} />
+              <Route path="/tai-khoan/*" element={<Account />} />
+            </Routes>
+          
+        </Router>
+      
     </AuthProvider>
   );
 };

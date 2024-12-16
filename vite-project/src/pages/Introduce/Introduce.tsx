@@ -6,9 +6,9 @@ import Footer from "../../components/AppBar/Footer/Footer";
 import BackToTop from "../../components/AppBar/BackTop/BackToTop";
 import Contact from "../../components/AppBar/ContactIcon/ContactButton";
 import BreadCrumb from "../../components/AppBar/BreadCrumb/BreadCrumb";
-import BlogWrapper from "../../components/AppBar/IntroduceComponents/BlogWrapper";
+
 import IntroduceWrapper from "../../components/AppBar/IntroduceComponents/IntroduceWrapper";
-import CategoryTable from "../../components/AppBar/CategoryTable/CategoryTable";
+
 
 
 const Introduce = () => {
@@ -23,11 +23,16 @@ const Introduce = () => {
             <Header onMenuClick={toggleDrawer} />
             <BreadCrumb />
             <div className="page-content">
-                <BlogWrapper>
+            
+            <div className="container">
+                <div className="row justify-content-between" >
 
+                    <div className="col-12" style={{background:"#fff"}}>
                     <IntroduceWrapper />
-                    <CategoryTable />
-                </BlogWrapper>
+                    </div>
+                 </div>
+                 </div>   
+                
             </div>
             <Footer />
             <BackToTop />

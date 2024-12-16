@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import './HomeProduct.scss'
 import {Category, Product} from '../../../utils/IVegetable';
 import axios from 'axios';
-import { APIENDPOINT } from '../../../utils/constant';
+import { APIENDPOINT, formatPrice } from '../../../utils/constant';
 import { Link } from 'react-router-dom';
 
 const HomeProduct = () => {
@@ -13,23 +13,18 @@ const HomeProduct = () => {
   const openTab = (categoryId: number) => {
     setActiveTab(categoryId); // Cập nhật tab active
   };
-  const formatPrice = (price: number): string => {
-    return price.toLocaleString('vi-VN'); // Vietnamese formatting with dot separators
-  };
+  
   useEffect(() => {
-    axios.get(`${APIENDPOINT}/product/api/productcategory/getall`)
-      .then(res => {
-        setTab(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-  }, [])
-  useEffect(() => {
-    axios.get(`${APIENDPOINT}/product/api/product/getall`)
-      .then(res => {
-        console.log(res.data)
-        const grouped = res.data.reduce((arr: Record<number, Product[]>, product: Product) => {
+    const fetchProductCategories = axios.get(`${APIENDPOINT}/product/api/productcategory/getall`);
+    const fetchProducts = axios.get(`${APIENDPOINT}/product/api/product/getall`);
+  
+    Promise.all([fetchProductCategories, fetchProducts])
+      .then(([categoriesRes, productsRes]) => {
+        // Xử lý dữ liệu categories
+        setTab(categoriesRes.data);
+  
+        // Xử lý dữ liệu products
+        const grouped = productsRes.data.reduce((arr: Record<number, Product[]>, product: Product) => {
           if (!arr[product.productCategoryId]) {
             arr[product.productCategoryId] = [];
           }
@@ -37,12 +32,12 @@ const HomeProduct = () => {
           return arr;
         }, {});
         setProductTab(grouped);
-        
       })
       .catch(err => {
         console.log(err);
-      })
-  }, [])
+      });
+  }, []);
+  
   
   return (
     <div className='home__products'>
@@ -64,7 +59,7 @@ const HomeProduct = () => {
                     </button>
                   ))
                 ) : (
-                  <p>Không có sản phẩm nào</p>
+                  ""
                 )}
               </div>
               {Object.keys(productTab).map(categoryId => {
@@ -76,7 +71,7 @@ const HomeProduct = () => {
                       {productTab[numCategoryId].map(product => (
                         <div className="col-md-auto product-item" key={product.id}>
                           <div className="product-img">
-                            <Link to="#">
+                            <Link to={`/san-pham/${product.id}`}>
                               <img
                                 src={`${APIENDPOINT}/product/images/${product.imageUrl}`}
                                 alt={product.productName}
@@ -90,7 +85,7 @@ const HomeProduct = () => {
                               </Link>
                             </div>
                             <div className="product-price">
-                              <span>{product.productVariantDTOs && product.productVariantDTOs[0].unitPrice?product.productVariantDTOs[0].unitPrice:formatPrice(product.price)} VNĐ</span>
+                              <span>{product.productVariantDTOs && product.productVariantDTOs[0].unitPrice?product.productVariantDTOs[0].unitPrice:formatPrice(product.price,0)} VNĐ</span>
                             </div>
                             <div className='text-center product-action'>
                             <Link to="#">
