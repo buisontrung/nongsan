@@ -7,13 +7,14 @@ import Contact from "../../components/AppBar/ContactIcon/ContactButton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { ShoppingCartType } from "../../utils/IVegetable";
-import { APIENDPOINT, formatPrice } from "../../utils/constant";
+import { APIENDPOINT, formatPrice } from "../../configs/constant";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import './ShopppingCart.scss'
 
 import 'react-toastify/dist/ReactToastify.css';
 import { HubConnectionBuilder } from "@microsoft/signalr";
+import { useCookies } from "react-cookie";
 type User = {
     id: string
 }
@@ -24,18 +25,18 @@ const ShoppingCart = () => {
     const [isAllChecked, setIsAllChecked] = useState<boolean>(false);
     const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [isLoading, setIsLoading] = useState(false);
+
     const user: User | null = (() => {
         const userData = sessionStorage.getItem('user');
         return userData ? JSON.parse(userData) as User : null;
       })();
-
+      const [cookies] = useCookies(['accessToken'])
 
   
     useEffect(() => {
         const fetchCartItems = async () => {
             if (!user?.id) { setCartItems([]) };
-            setIsLoading(true); 
+           
             try {
                 const response = await axios.get(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/userId=${user?.id}`);
                 setCartItems(response.data);
@@ -44,9 +45,7 @@ const ShoppingCart = () => {
                 
                 console.error("Error fetching cart items:", error);
             }
-            finally {
-                setIsLoading(false); // Kết thúc loading
-            }
+            
         }
         fetchCartItems();
     }, [user?.id]);
@@ -64,12 +63,16 @@ const ShoppingCart = () => {
         const updatedCheckedItems = [...checkedItems];
         updatedCheckedItems[index] = !updatedCheckedItems[index];
         setCheckedItems(updatedCheckedItems);
-
+//các sản phẩm đang được chọn
         setCartItemsChecked((prev) => {
+
             const updatedItems = [...prev];
+            //kiểm tra xem check = true thì thêm sản phẩm vào danh sách các sản phẩm đang được chọn
             if (updatedCheckedItems[index]) {
                 updatedItems.push(cartItems[index]);
-            } else {
+            }
+            //kiểm tra xem check = false thì xóa sản phẩm ra khỏi danh sách các sản phẩm đang được chọn
+            else {
                 const itemIndex = updatedItems.findIndex(item => item.shoppingCart.id === cartItems[index].shoppingCart.id);
                 if (itemIndex > -1) updatedItems.splice(itemIndex, 1);
             }
@@ -88,8 +91,12 @@ const ShoppingCart = () => {
             .map(item => item.shoppingCart.id);
 
         try {
-            // Xóa các items đã chọn từ API
+            // Xóa các items đã chọn từ 
+            const token = cookies.accessToken;
             axios.delete(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/delete`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                  },
                 data: itemIdsToDelete,
             }).then(async () => {
                 const newConnection = new HubConnectionBuilder()
@@ -102,9 +109,10 @@ const ShoppingCart = () => {
 
                     if (newConnection.state === "Connected") {
                         await newConnection.invoke("NotifyCartUpdate", user?.id); // Gửi sự kiện
+                        //giữ lại các phần tử có id không trùng với danh sách id đã xóa
                         setCartItems(prevItems => prevItems.filter(item => !itemIdsToDelete.includes(item.shoppingCart.id)));
 
-                        // Cập nhật lại checkedItems để đảm bảo rằng các checkbox không bị chọn sau khi xóa
+                        // Cập nhật lại các cartitems đang đc chọn checkedItems để đảm bảo rằng các checkbox không bị chọn sau khi xóa
                         setCheckedItems(prevCheckedItems =>
                             prevCheckedItems.filter((_, index) => !itemIdsToDelete.includes(cartItems[index]?.shoppingCart.id))
                         );
@@ -152,7 +160,9 @@ const ShoppingCart = () => {
     };
     const handleIncreaseQuantity = (index: number) => {
         setCartItems((prevItems) => {
+            //sao chép mảng các sản phẩm trong giỏ hàng hiện tại
             const updatedItems = [...prevItems];
+            //lấy ra số lượng lớn nhất 
             const maxQuantity = updatedItems[index].product.productVariantDTOs[0].productInventorySuppliers[0].quantity;
 
             if (updatedItems[index].shoppingCart.quantity >= maxQuantity) {
@@ -160,6 +170,7 @@ const ShoppingCart = () => {
                 return updatedItems;
             } else {
                 updatedItems[index].shoppingCart.quantity += 1;
+                
                 axios
                     .put(`${APIENDPOINT}/shoppingcart/api/shoppingcart/update`, {
                         quantity: updatedItems[index].shoppingCart.quantity,
@@ -179,7 +190,7 @@ const ShoppingCart = () => {
                             return rolledBackItems;
                         });
                     });
-                    updateTotalPrice(updatedItems)
+                    if(checkedItems[index] ===true) updateTotalPrice(cartItemsChecked)
             }
 
            
@@ -213,7 +224,7 @@ const ShoppingCart = () => {
                             return rolledBackItems;
                         });
                     });
-                updateTotalPrice(updatedItems)
+                    if(checkedItems[index] ===true) updateTotalPrice(cartItemsChecked)
             }
 
 
@@ -225,11 +236,7 @@ const ShoppingCart = () => {
 
     };
     
-    return isLoading ? (
-        <div className="loading-spinner">
-            <p>Đang tải...</p>
-        </div>
-    ) : (
+    return (
         <>
             <NavDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
             <Header onMenuClick={toggleDrawer} />

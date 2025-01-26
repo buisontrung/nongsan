@@ -13,16 +13,24 @@ const orderArr:{name:string,status:number}[]=[
     status:0
   },
   {
-    name:"Chờ thanh toán",
+    name:"Đang xử lí",
     status:1
   },
   {
-    name:"Chờ giao hàng",
+    name:"Đang chuẩn bị",
     status:2
   },
   {
-    name:"Hoàn thành",
+    name:"Chờ giao hàng",
     status:3
+  },
+  {
+    name:"Hoàn thành",
+    status:4
+  },
+  {
+    name:"Đã hủy",
+    status:5
   }
 ]
 const navArray: { name: string; url: string }[] = [
@@ -43,13 +51,10 @@ const navArray: { name: string; url: string }[] = [
       url: "danh-muc-bai-viet"
     },
     {
-      name: "LIÊN HỆ",
-      url: "lien-he"
+      name: "SỨ MỆNH",
+      url: "ve-chung-toi"
     },
-    {
-      name: "ĐẶT HÀNG",
-      url: "dat-hang"
-    }
+    
   ];
   const introducearr: { name: string; content:string[]} = {
     name:"Giới Thiệu",

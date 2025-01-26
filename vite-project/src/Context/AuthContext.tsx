@@ -1,8 +1,8 @@
 import axios from "axios";
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { APIENDPOINT } from "../../utils/constant";
-import { user } from "../../utils/IVegetable";
+import { APIENDPOINT } from "../configs/constant";
+import { user } from "../utils/IVegetable";
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -28,9 +28,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             if (rftoken) {
                 setIsAuthenticated(true); // Tạm thời đặt xác thực thành true
                 const savedUser = sessionStorage.getItem("user");
-
+                
                 if (savedUser) {
                     setCurrentUser(JSON.parse(savedUser));
+                    
+                   
                 } else {
                     // Nếu không có, gọi API lấy thông tin người dùng và lưu vào sessionStorage
                     try {
@@ -41,10 +43,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                         });
                         setCurrentUser(response.data);
                         sessionStorage.setItem("user", JSON.stringify(response.data));
+
                     } catch (error) {
                         console.log("Error fetching user data:", error);
                     }
                 }
+                //goi accesstoken mới
                 if (!accessToken || accessToken === 'undefined' || accessToken === '') {
                     try {
                         const response = await axios.post(`${APIENDPOINT}/Auth/api/Auth/GenerateToken?refreshToken=${rftoken}`);
@@ -82,6 +86,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         axios.put(`${APIENDPOINT}/Auth/api/Auth/RevokedToken?refreshToken=${rftoken}`)
         removeCookie('accessToken');
         removeCookie('refreshToken');
+       
         sessionStorage.removeItem("user")
         setCurrentUser(null)
         // Đặt trạng thái đăng xuất

@@ -1,5 +1,5 @@
 
-import { introducearr } from '../../../utils/array'
+import { introducearr } from '../../../const/array'
 
 const IntroduceWrapper = () => {
     return (

@@ -1,15 +1,18 @@
 import axios from "axios"
 import { useEffect, useMemo, useState } from "react"
-import { APIENDPOINT, formatPrice } from "../../../utils/constant"
+import { APIENDPOINT, formatPrice } from "../../../configs/constant"
 import { Product, RatingCount, Review, ShoppingCartItem } from "../../../utils/IVegetable";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {  faShoppingCart, faStar } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import { Link, useParams } from "react-router-dom";
 // import { useCart } from "../../Context/useCartOverlay";
-import { useAuth } from "../../Context/useAuth";
+import { useAuth } from "../../../Context/useAuth";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import axiosInstance from "../../../utils/axiosInstance";
+
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 
 
@@ -19,6 +22,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 const Product1 = () => {
 
     // const { addToCart} = useCart()
+
     const [product, setProduct] = useState<Product>();
     const { user } = useAuth();
     const [recommend, setRecommend] = useState<Product[]>([]);
@@ -33,22 +37,43 @@ const Product1 = () => {
     const [tabReview,setTabReview] = useState(0);
     const [content, setContent] = useState("");
     const price = product?.productVariantDTOs
+        .find(varian => varian.id === choose)?.priceSale;
+    const unitprice = product?.productVariantDTOs
         .find(varian => varian.id === choose)?.unitPrice;
     const totalQuantity = product?.productVariantDTOs
         .filter(varian => varian.id === choose)
         .flatMap(varian => varian.productInventorySuppliers)
         .reduce((total, supplier) => total + supplier.quantity, 0) || 0;
-    const product1 = product?.productVariantDTOs
+    const productChoose = product?.productVariantDTOs
         .filter(varian => varian.id === choose)
     const VariantIds = useMemo(() => {
         return product?.productVariantDTOs.map(variant => variant.id) || [];
     }, [product]);
     const [star, setStar] = useState<number | undefined>();
     const [ratings, setRatings] = useState<Review[]>()
+    useEffect(() => {
+        const fetchProductData = async () => {
+            try {
+                const [productRes, reviewsRes, ratingCountRes] = await Promise.all([
+                    axios.get(`${APIENDPOINT}/product/api/Product/id1=${params.id}`),
+                    axios.get(`${APIENDPOINT}/product/api/Review/Product/${params.id}`),
+                    axios.get(`${APIENDPOINT}/product/api/Review/countRatingProduct?Id=${params.id}`)
+                ]);
     
+                setProduct(productRes.data);
+                setRatings(reviewsRes.data);
+                setRatingcout(ratingCountRes.data);
+                setChoose(productRes.data.productVariantDTOs[0].id)
+            } catch (error) {
+                console.error("Error fetching product data:", error);
+            }
+        };
+    
+        fetchProductData();
+    }, [params.id]);
     useEffect(() => {
 
-
+        
         if (choose) {
             axios.get(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/user=${user?.id}&productVarianId=${choose}`)
                 .then(res => {
@@ -63,28 +88,30 @@ const Product1 = () => {
     }, [choose, user?.id])
     const handleAddtoCart = () => {
 
-        if (choose === undefined) {
-            alert("bạn chưa chọn quy cách");
-            return;
-        }
+  
 
         if ((cartItem?.quantity ?? 0) + quantity > totalQuantity) {
 
             alert(`bạn đã có ${cartItem?.quantity} số lượng trong giỏ hàng nên không thể thêm ${quantity}`);
             return;
-        } else if (product1) {
+        } else if (productChoose) {
 
-
+            if(user===null){
+                return;
+            }
 
             axios.post(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/add`, {
                 id: cartItem?.id || 0,
                 userId: user?.id,
                 quantity: quantity,
-                productVarianId: product1[0].id,
-                price: product1[0].unitPrice, // Ensure this accesses the actual price property
+                productVarianId: productChoose[0].id,
+                price: productChoose[0].priceSale, // Ensure this accesses the actual price property
             })
                 .then(async (res) => {
                     setCartItem(res.data);
+                    if(user===null){
+                        return;
+                    }
                     const newConnection = new HubConnectionBuilder()
                         .withUrl("https://localhost:7006/cartHub")
                         .withAutomaticReconnect()
@@ -131,28 +158,7 @@ const Product1 = () => {
         slidesToShow: 1,
         slidesToScroll: 1
     };
-    useEffect(() => {
 
-        const fetchproduct = async () => {
-            try {
-                const productres = await axios.get(`${APIENDPOINT}/product/api/Product/id=${params.id}`)
-
-                setProduct(productres.data)
-
-                const reviews = await axios.get(`${APIENDPOINT}/product/api/Review/Product/${params.id}`)
-                
-                setRatings(reviews.data)
-                const ratingcount = await axios.get(`${APIENDPOINT}/product/api/Review/countRatingProduct?Id=${params.id}`)
-                setRatingcout(ratingcount.data);
-                console.log(reviews.data)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        fetchproduct();
-
-    }, [params.id])
     useEffect(() => {
         if (VariantIds.length > 0) {
             const queryString = VariantIds && VariantIds.map(id => `VariantIds=${id}`).join('&');
@@ -173,25 +179,22 @@ const Product1 = () => {
 
     }, [VariantIds])
     useEffect(() => {
-        const fetchCategoryId = async () => {
-            if (!product?.productCategoryId) {
-
-                return;
-            }
-
+        const fetchRecommendations = async () => {
+            if (!product?.productCategoryId) return;
+    
             try {
-                const response = await axios.get(`${APIENDPOINT}/product/api/Product/productcategoryid=${product.productCategoryId}`);
-                
-                setRecommend(response.data);
-                const response1 = await axios.get(`${APIENDPOINT}/product/api/Product/productscategoryid=3&getbyorder=default&pz=3&pn=1`);
-
-                setRecommend1(response1.data);
+                const [recommendRes, recommend1Res] = await Promise.all([
+                    axios.get(`${APIENDPOINT}/product/api/Product/productcategoryid=${product.productCategoryId}`),
+                    axios.get(`${APIENDPOINT}/product/api/Product/productscategoryid=3&getbyorder=default&pz=3&pn=1`)
+                ]);
+                setRecommend(recommendRes.data);
+                setRecommend1(recommend1Res.data);
             } catch (error) {
-                console.error("Error fetching category ID:", error);
+                console.error("Error fetching recommendations:", error);
             }
         };
-
-        fetchCategoryId();
+    
+        fetchRecommendations();
     }, [product?.productCategoryId]);
     const handleTab = (key: number) => {
         setTab(key)
@@ -208,24 +211,34 @@ const Product1 = () => {
             setQuantity(totalQuantity)
         }
     };
-    const handleRating = () => {
+    const handleRating = async() => {
         if (star === undefined || star === null) {
             // Nếu chưa chọn rating, thông báo "Chưa đánh giá"
             alert("Bạn chưa đánh giá sản phẩm!");
             return; // Dừng lại và không gửi yêu cầu POST
         }
-        axiosInstance.post(`${APIENDPOINT}/product/api/review/create`,
-            {
-                id: 1,
-                productId: product?.id,
-                userId: "string",
-                userName:user?.firstName+" "+user?.lastName,
-                rating: star,
-                createAt: Date.now,
-                updateAt: Date.now,
-                content: content
-            }
-        )
+        
+        try {
+             axios.post(
+                `${APIENDPOINT}/product/api/review/create`,
+                {
+                    id: 1,
+                    productId: product?.id,
+                    userId: user?.id,
+                    userName: user?.firstName + " " + user?.lastName,
+                    rating: star,
+                    createAt: new Date().toISOString(),
+                    updateAt: new Date().toISOString(),
+                    content: content,
+                },
+
+            ).then(()=>(window.location.reload()));
+            
+            // Reload the page after the request is successful
+            
+        } catch (error) {
+            console.error("Error submitting review:", error);
+        }
     }
 
     return (
@@ -240,7 +253,7 @@ const Product1 = () => {
                                 <Slider {...settings}>
                                     {product.productImageDTOs.map((image, index) => (
                                         <div key={index}>
-                                            <img src={image.imageUrl} style={{ width: "100%", border: "1px solid #d3ced2" }} alt={`Product image ${index + 1}`} />
+                                            <LazyLoadImage src={image.imageUrl} style={{ width: "100%", border: "1px solid #d3ced2" }} alt={`Product image ${index + 1}`} />
                                         </div>
                                     ))}
                                 </Slider>
@@ -259,7 +272,7 @@ const Product1 = () => {
                                     <p className="fs-6"><strong>Danh Mục</strong>: {product?.productCategoryDTO?.productCategoryName}</p>
                                 </div>
                                 <div className="pro-price pb-3">
-                                    <span className="current-price fs-5" style={{ color: "#86bc42" }}> {price && formatPrice(price, 0)} VNĐ</span>
+                                    <span className="current-price fs-5" style={{ color: "#86bc42" }}><s>{unitprice && formatPrice(unitprice, 0)}</s> - {price && formatPrice(price, 0)} VNĐ</span>
                                 </div>
                                 <div >
                                     <div className="swatch d-flex mb-4">
@@ -342,9 +355,7 @@ const Product1 = () => {
                                                 />
                                                 <span className="ms-1">Thêm Vào Giỏ Hàng</span>
                                             </button>
-                                            <button type="button" className="btn btn-solid-primary btn--l YuENex eFAm_w" aria-disabled="false">
-                                                <div>Mua Với Voucher</div><div className="Rt4WYl">{product && formatPrice(product?.price, 0)}VND</div>
-                                            </button>
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -419,9 +430,9 @@ const Product1 = () => {
                                                                     <div>
                                                                         <h5 className="mb-0">{rating.userName}</h5>
                                                                         <div>{stars}</div>
-                                                                        <div>{rating.createAt}</div>
+                                                                        
                                                                         <div className="mt-2">{rating.content}</div>
-                                                                        <img  className="mt-2" src="https://login.medlatec.vn//ImagePath/images/20221028/20221028_qua-tao-1.jpg" style={{width:"100px",height:"auto"}} alt="" />
+                                                                       
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -464,7 +475,7 @@ const Product1 = () => {
                                             </div>
 
                                         </div>
-                                        <button type="submit" onClick={() => { if (checkComment) { handleRating() } }} className={`px-5 pb-2 pt-2 mb-3 btn btn-solid-primary ${checkComment ? "" : "not-allowed"}`} style={{ borderRadius: "2px" }} disabled={!checkComment}>
+                                        <button type="button" onClick={() => { if (checkComment) { handleRating() } }} className={`px-5 pb-2 pt-2 mb-3 btn btn-solid-primary ${checkComment ? "" : "not-allowed"}`} style={{ borderRadius: "2px" }} disabled={!checkComment}>
                                             <span><strong>Gửi đi</strong></span>
                                         </button>
                                     </form>
@@ -495,7 +506,7 @@ const Product1 = () => {
                                     </Link>
                                 </div>
                                 <div className="product-price">
-                                    
+                                    <span>{formatPrice(product.price, 0)} VNĐ</span>
                                 </div>
                                 <div className='text-center product-action'>
                                     <Link to="#">

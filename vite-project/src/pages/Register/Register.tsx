@@ -2,8 +2,8 @@
 import axios from 'axios';
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { APIENDPOINT } from '../../utils/constant';
-import { useAuth } from '../../components/Context/useAuth';
+import { APIENDPOINT } from '../../configs/constant';
+import { useAuth } from '../../Context/useAuth';
 
 const Register = () => {
     const [check, setCheck] = useState<boolean>(false);
@@ -94,7 +94,7 @@ const Register = () => {
                 
                     alert('Đăng ký thành công!');
                     login({token:res.data.token,refreshToken:res.data.refreshToken})
-
+                    
                     navigate('/')
             })
             .catch(err => {

@@ -17,16 +17,24 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
-
+  
   <script type="text/javascript">
+    
     (function (d, m) {
+      var user = JSON.parse(sessionStorage.getItem("user"));
       var kommunicateSettings =
       {
-        "appId": "120de401009bf2fdd1177c43cb5065337", "popupWidget": true, "automaticChatOpenOnNavigation": true, "userId": "user_123", // ID của người dùng từ cơ sở dữ liệu
-        "userName": "Nguyen Van A", // Tên từ cơ sở dữ liệu
-        "email": "nguyenvana@example.com", // Email từ cơ sở dữ liệu
+        "appId":"2a10678e8190f2e7da9cfeeca6070165b","popupWidget":true,"automaticChatOpenOnNavigation":true,
+        "userId": user.id, 
+        "userName": user.firstName+" "+ user.lastName, // Tên từ cơ sở dữ liệu
+        "email": user.email, // Email từ cơ sở dữ liệu
+        "address": "1111",
         "language": "vi",
         "talkToHuman": true, primaryCTA: "TALK_TO_HUMAN",
+        "metadata": {
+        "customKey": "customValue",
+        "anotherKey": "anotherValue"
+        }
    
       };
       var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;

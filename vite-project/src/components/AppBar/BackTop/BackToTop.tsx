@@ -1,22 +1,19 @@
-import { useEffect, useState } from "react";
+
 import './BackToTop.scss'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDoubleUp } from "@fortawesome/free-solid-svg-icons";
 const BackToTop = () => {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const handleScroll = () => {
-        if (window.scrollY > 150) {
-            setIsScrolled(true);
-        } else {
-            setIsScrolled(false);
-        }
+
+    
+    const handleBackToTop = () => {
+        // Cuộn lên đầu trang khi click vào nút
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'  // Hiệu ứng cuộn mượt
+        });
     };
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-      }, []);
     return (
-        <div id='back-to-top' className={`${!isScrolled?"d-none":""}`}>
+        <div id='back-to-top' onClick={handleBackToTop} style={{cursor:"pointer"}}>
             <div className="back-circle">
                 <div className="circle"></div>
                 <div className="circle"></div>

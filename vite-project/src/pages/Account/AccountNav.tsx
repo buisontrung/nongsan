@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../../components/Context/useAuth";
+import { useAuth } from "../../Context/useAuth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faUser } from "@fortawesome/free-solid-svg-icons";
 
@@ -28,8 +28,8 @@ const AccountNav = () => {
                             <div className="ms-2 mt-2 d-flex flex-column">
                             <Link to="profile" className="mb-2">Hồ sơ</Link>
                             <Link to="dia-chi" className="mb-2">Địa Chỉ</Link>
-                            <Link to="/profile" className="mb-2">Đổi mật khẩu</Link>
-                            <Link to="/profile" className="mb-2">Xóa account</Link>
+                            <Link to="doi-mat-khau" className="mb-2">Đổi mật khẩu</Link>
+  
                             </div>
                         </div>
                         <div className="d-flex"><div className="col-1"><FontAwesomeIcon icon={faBars} style={{fontSize:"22px", color:"#86bc42"}}/></div><Link to='don-hang'className="ms-2 fw-bold">Đơn Mua</Link></div>

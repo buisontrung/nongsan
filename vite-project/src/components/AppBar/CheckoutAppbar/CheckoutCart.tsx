@@ -1,4 +1,4 @@
-import { APIENDPOINT, formatPrice } from "../../../utils/constant";
+import { APIENDPOINT, formatPrice } from "../../../configs/constant";
 import {  ShoppingCartType } from "../../../utils/IVegetable"
 
 interface CheckoutCartProps {

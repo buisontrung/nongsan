@@ -3,11 +3,11 @@ import './Header.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCartShopping, faClock, faEnvelope, faPhone, faSearch } from '@fortawesome/free-solid-svg-icons'
 import {  useEffect, useState } from 'react';
-import { navArray } from '../../../utils/array';
-import { useAuth } from '../../Context/useAuth';
+import { navArray } from '../../../const/array';
+import { useAuth } from '../../../Context/useAuth';
 
 import axios from 'axios';
-import { APIENDPOINT } from '../../../utils/constant';
+import { APIENDPOINT } from '../../../configs/constant';
 import SearchInput from '../Search/SearchInput';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 interface HeaderProps {
@@ -16,6 +16,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
     const { isAuthenticated, logout,user} = useAuth();
+    
     const [isScrolled, setIsScrolled] = useState(false);
 
     const [cartItems, setCartItems] = useState(0);

@@ -5,7 +5,7 @@ import NavDrawer from '../../components/AppBar/NavDrawer/NavDrawer'
 import './Post.scss'
 import { post } from '../../utils/IVegetable';
 import axios from 'axios';
-import { APIENDPOINT } from '../../utils/constant';
+import { APIENDPOINT } from '../../configs/constant';
 import Footer from '../../components/AppBar/Footer/Footer';
 import BackToTop from '../../components/AppBar/BackTop/BackToTop';
 import Contact from '../../components/AppBar/ContactIcon/ContactButton';

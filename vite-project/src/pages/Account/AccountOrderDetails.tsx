@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Order, OrderDetail } from "../../utils/IVegetable";
-import { APIENDPOINT, formatPrice } from "../../utils/constant";
+import { APIENDPOINT, formatPrice } from "../../configs/constant";
 import axios from "axios";
 
 const AccountOrderDetails = () => {
@@ -33,7 +33,33 @@ const AccountOrderDetails = () => {
             fetchOrderDetails();
         }
     }, []);
+    const handleUpdateOrder = async () => {
+        // Cập nhật trạng thái trong mảng đơn hàng
+ 
     
+        try {
+            // Gửi yêu cầu PUT đến API
+            setOrder((prevRow) => (prevRow?{
+                ...prevRow,
+                status: 4,
+               
+            }:prevRow));
+            const response = await axios.put(`${APIENDPOINT}/order/api/order/UpdateStatus`, {
+                id: order?.id,
+                status: 4,
+            });
+    
+            // Kiểm tra phản hồi thành công
+            if (response.status === 200) {
+                console.log("Order status updated successfully");
+            } else {
+                console.error("Failed to update order status:", response.data);
+            }
+        } catch (error) {
+            // Xử lý lỗi
+            console.error("An error occurred while updating order status:", error);
+        }
+    };
     return (
         <div className="container h-100 px-4" style={{ backgroundColor: "#fff" }}>
             <div className="card-order">
@@ -43,10 +69,11 @@ const AccountOrderDetails = () => {
 
                 <div className="progress-track">
                     <ul id="progressbar">
-                        <li className={`step0 ${order && order?.status >= 1 ? "active-order" : ""}`} id="step1">Đang xác nhận</li>
+                        <li className={`step0 ${order && order?.status >= 1 ? "active-order" : ""}`} id="step1">Đang xử lý</li>
                         <li className={`step0 ${order && order?.status >= 2 ? "active-order" : ""}`} id="step2">Đang chuẩn bị</li>
                         <li className={`step0 ${order && order?.status >= 3 ? "active-order" : ""}`} id="step3">Đang giao</li>
                         <li className={`step0 ${order && order?.status >= 4 ? "active-order" : ""}`} id="step4">Hoàn thành</li>
+                        
                     </ul>
                 </div>
                 <div className="info-order">
@@ -80,7 +107,7 @@ const AccountOrderDetails = () => {
                                 <span >{detail.product.productName}</span>
                             </div>
                             <div className="col-2">
-                                <img src={`${APIENDPOINT}/product/images/${detail.product.imageUrl}`} style={{ width: "100%", height: "auto" }} alt="" />
+                                <img src={`${APIENDPOINT}/product/images/${detail.product.imageUrl}`} style={{ width: "100px", height: "auto" }} alt="" />
                             </div>
                             <div className="col-1"></div>
                             <div className="col-3">
@@ -155,7 +182,7 @@ const AccountOrderDetails = () => {
                     </div>
                 </div>
             </div>
-            <div className="row d-flex justify-content-end">{order && order?.status <=3 && <button className="btn col-3 text-center d-block btn-order" disabled={!(order&&order?.status === 3)}>Xác nhận hàng</button>}</div>
+            <div className="row d-flex justify-content-end">{order && order?.status <=3 && <button className="btn col-3 text-center d-block btn-order" disabled={!(order&&order?.status === 3)} onClick={handleUpdateOrder}>Xác nhận hàng</button>}</div>
         </div>
     );
 };

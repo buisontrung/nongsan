@@ -18,7 +18,7 @@ import { useState } from "react";
 
 const Home: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+
   const toggleDrawer = () => {
     setIsDrawerOpen(!isDrawerOpen);
   };

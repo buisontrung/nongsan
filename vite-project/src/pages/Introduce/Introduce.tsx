@@ -24,10 +24,10 @@ const Introduce = () => {
             <BreadCrumb />
             <div className="page-content">
             
-            <div className="container">
-                <div className="row justify-content-between" >
+            <div className="container" style={{minHeight:"100vh"}}>
+                <div className="row justify-content-between" style={{minHeight:"90vh"}}>
 
-                    <div className="col-12" style={{background:"#fff"}}>
+                    <div className="col-12 px-4" style={{background:"#fff"}}>
                     <IntroduceWrapper />
                     </div>
                  </div>

@@ -6,6 +6,13 @@ interface Category {
     isActive: boolean;
     createDate: string;
   }
+  interface Sale {
+    id?: number;
+    saleName?: string;
+    discountPercentage?: number;
+    startDate?: string;
+    endDate?: string;
+  }
   
   interface Product {
     id: number;
@@ -17,7 +24,7 @@ interface Category {
     price: number;
     minPrice:number;
     maxPrice:number;
-    priceSale:number;
+    sale:Sale
     productImageDTOs:ProductImage[],
     productCategoryDTO?:Category,
     productVariantDTOs: productVariant[]
@@ -25,6 +32,7 @@ interface Category {
   interface Login{
     userName:string,
     password:string,
+
   }
   interface post{
     id:string,
@@ -46,6 +54,8 @@ interface Category {
     firstName?:string,
     lastName?:string,
     phoneNumber:string,
+    email:string,
+
   }
   interface contenttype{
     title:string,
@@ -57,6 +67,7 @@ interface Category {
     variantName:string,
     productId:number,
     unitPrice:number,
+    priceSale:number,
     productInventorySuppliers: productInventorySupplier[]
   }
   interface productInventorySupplier{
@@ -172,6 +183,11 @@ interface RatingCount{
   count:number
 
 }
+interface errApi{
+  res:{
+    data:string,
+  }
+}
   // Sử dụng export type để xuất các interface
-  export type { RatingCount,Review,Category, Product,Login,comment,post,user,ShoppingCartType,ShoppingCartItem,Address,Province,ListProvince,Order,Item,Promotion,OrderDetail};
+  export type { Sale,errApi,RatingCount,Review,Category, Product,Login,comment,post,user,ShoppingCartType,ShoppingCartItem,Address,Province,ListProvince,Order,Item,Promotion,OrderDetail};
   

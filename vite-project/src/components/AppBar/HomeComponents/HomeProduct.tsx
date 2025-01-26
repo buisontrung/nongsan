@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import './HomeProduct.scss'
 import {Category, Product} from '../../../utils/IVegetable';
 import axios from 'axios';
-import { APIENDPOINT, formatPrice } from '../../../utils/constant';
+import { APIENDPOINT, formatPrice } from '../../../configs/constant';
 import { Link } from 'react-router-dom';
 
 const HomeProduct = () => {
@@ -85,7 +85,7 @@ const HomeProduct = () => {
                               </Link>
                             </div>
                             <div className="product-price">
-                              <span>{product.productVariantDTOs && product.productVariantDTOs[0].unitPrice?product.productVariantDTOs[0].unitPrice:formatPrice(product.price,0)} VNĐ</span>
+                              <span>{product.maxPrice && product.minPrice?formatPrice(product.minPrice,0):formatPrice(0,0)} VNĐ</span>
                             </div>
                             <div className='text-center product-action'>
                             <Link to="#">

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { APIENDPOINT, formatPrice } from "../../../utils/constant";
+import { APIENDPOINT, formatPrice } from "../../../configs/constant";
 import axios from "axios";
 import { Address, Item,ShoppingCartType } from "../../../utils/IVegetable";
-import { useAuth } from "../../Context/useAuth";
+import { useAuth } from "../../../Context/useAuth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 interface CheckoutPaymetProps {
   totalPrice: number;
@@ -18,6 +20,7 @@ const CheckoutPaymet: React.FC<CheckoutPaymetProps> = ({ totalPrice ,address,car
   const {user} = useAuth();
   const [address1,setAddress1]= useState("")
   const navigate = useNavigate();
+  const [cookies] = useCookies(['accessToken', 'refreshToken']);
   useEffect(() => {
     // Update the items state whenever cartItems change
     const newItems = cartItems.map((x) => ({
@@ -30,6 +33,7 @@ const CheckoutPaymet: React.FC<CheckoutPaymetProps> = ({ totalPrice ,address,car
 
 
   }, [cartItems, address]); // This will run when cartItems or address changes
+  const ids = cartItems.map(item => item.shoppingCart.id);
   const handleDeleteSelectedItems = async () => {
     const itemIdsToDelete = cartItems.map(item => item.shoppingCart.id);
   
@@ -39,10 +43,10 @@ const CheckoutPaymet: React.FC<CheckoutPaymetProps> = ({ totalPrice ,address,car
       });
       // Cập nhật trạng thái cartItems
 
-      toast.success("Xóa các sản phẩm khỏi giỏ hàng thành công.");
+      
     } catch (error) {
       console.error("Error deleting selected items:", error);
-      toast.error("Lỗi khi xóa sản phẩm khỏi giỏ hàng.");
+      
     }
   }
   const handlePayment = async () => {
@@ -50,16 +54,17 @@ const CheckoutPaymet: React.FC<CheckoutPaymetProps> = ({ totalPrice ,address,car
       switch (paymentOption) {
         case 1: // Thanh toán khi nhận hàng
           await axios.post(`${APIENDPOINT}/order/api/Order/thanh-toan-nhan-hang`, 
-            {customerName:user?.firstName +" "+ user?.lastName,
+            { customerName:address?.userNameAddress,
               address:address1,
               phone:address?.phoneNumberAddress,
               promotionId:null,
               userId:user?.id,
               paymentMethodId:1,
-              isPayment:false,
+              isPayment:true,
               items:items,
               promotion:null,
-              status:1
+              status:1,
+              email:"sontrungtt@gmail.com"
           });
           handleDeleteSelectedItems();
           toast.success("Đặt hàng thành công, thanh toán khi nhận hàng."); 
@@ -67,6 +72,43 @@ const CheckoutPaymet: React.FC<CheckoutPaymetProps> = ({ totalPrice ,address,car
           break;
 
         case 2: {
+          if(!address?.userNameAddress){
+            alert("bạn chưa tạo địa chỉ");
+            return;
+          }
+          axios.delete(`${APIENDPOINT}/ShoppingCart/api/ShoppingCart/delete`, {
+            headers: {
+                'Authorization': `Bearer ${cookies.accessToken}`
+              },
+            data: ids,
+        })
+        .then(async () => {
+                        const newConnection = new HubConnectionBuilder()
+                            .withUrl("https://localhost:7006/cartHub")
+                            .withAutomaticReconnect()
+                            .build();
+        
+                        try {
+                            await newConnection.start(); // Bắt đầu kết nối
+        
+                            if (newConnection.state === "Connected") {
+                                await newConnection.invoke("NotifyCartUpdate", user?.id); // Gửi sự kiện
+                                //giữ lại các phần tử có id không trùng với danh sách id đã xóa
+                                
+                                alert("thành công")
+                            }
+                        } catch (error) {
+                            console.error("Lỗi khi gửi thông báo:", error);
+                        } finally {
+                            await newConnection.stop(); // Đảm bảo kết nối luôn được đóng
+                            console.log("Kết nối đã được đóng.");
+                        }
+                    }
+        
+        
+        
+                    );
+        
         axios.post(`${APIENDPOINT}/order/api/Order/vnpay`,{
           customerName:address?.userNameAddress,
           address:address1,
@@ -80,6 +122,7 @@ const CheckoutPaymet: React.FC<CheckoutPaymetProps> = ({ totalPrice ,address,car
           status:2,
           email:"sontrungtt@gmail.com"
       }).then(res=>{
+        // chuyển hướng theo đường link
         window.location.href=res.data.url
         handleDeleteSelectedItems();
 
@@ -91,13 +134,7 @@ const CheckoutPaymet: React.FC<CheckoutPaymetProps> = ({ totalPrice ,address,car
         alert("Bạn đã chọn thanh toán qua VNPay. Đang xử lý...");
           break;
         }
-        case 3: // Thanh toán qua MoMo
-          // API gọi MoMo (cần thay đổi URL nếu cần)
-          axios.post(`${APIENDPOINT}/payment/momo`, {
-            totalPrice: totalPrice + 20000,
-          });
-          alert("Bạn đã chọn thanh toán qua MoMo. Đang xử lý...");
-          break;
+        
 
         default:
           toast.error("Phương thức thanh toán không hợp lệ");

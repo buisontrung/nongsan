@@ -6,7 +6,7 @@ import { APIENDPOINT } from '../../../configs/constant';
 import './Product.scss'
 
 
-const Products = () => {
+const ProductSale1 = () => {
 const location = useLocation();
     const categoryName = location.state?.name;
     const id = location.state?.id || 0;
@@ -36,7 +36,7 @@ const location = useLocation();
 
     useEffect(() => {
         const getSortingEndpoint = () => {
-            let endpoint = `${APIENDPOINT}/product/api/Product/productscategoryid=${id}`;
+            let endpoint = `${APIENDPOINT}/product/api/Product/saleid=${id}`;
             switch (orderbyIndex) {
                 case 1:
                     endpoint += '&getbyorder=default';
@@ -156,4 +156,4 @@ const location = useLocation();
     )
 }
 
-export default Products;
+export default ProductSale1;

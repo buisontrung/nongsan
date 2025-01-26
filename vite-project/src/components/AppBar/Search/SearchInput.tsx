@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 import { Product } from '../../../utils/IVegetable'
 import axios from 'axios'
-import { APIENDPOINT } from '../../../utils/constant'
+import { APIENDPOINT } from '../../../configs/constant'
 import './SearchInput.scss'
 import { useNavigate } from 'react-router-dom'
 
@@ -56,7 +56,11 @@ const SearchInput:React.FC = () => {
          onSelect={HandleOnSelect}
         // onClear={handleOnClear}
         showIcon={false}
-        fuseOptions={{ keys: ["productName"] }}
+        fuseOptions={{ keys: ["productName"] ,
+          //độ chính xác
+          threshold: 0.3,
+          //bỏ qua vị trí từ khóa search
+          ignoreLocation: true, }}
         resultStringKeyName="productName" 
         autoFocus
         formatResult={formatResult} 

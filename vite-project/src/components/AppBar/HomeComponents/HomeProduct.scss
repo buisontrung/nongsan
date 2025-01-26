@@ -3,16 +3,16 @@
     
 }
 .tab{
-    margin-bottom: 20px;
-    margin: 0 auto auto;
+    margin: 0 19px 20px 19px;
     text-align: center;
-    display: table;
+    display: flex;
     border-bottom: 1px solid #ededed;
     box-sizing: content-box;
 
 }
 .tab{
     button{
+        flex: 1;
         position: relative;
         background: none;
         text-transform: capitalize;

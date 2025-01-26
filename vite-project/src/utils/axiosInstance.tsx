@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { APIENDPOINT } from './constant';
+import { APIENDPOINT } from '../configs/constant';
 import { Cookies } from 'react-cookie';
 
 // Khởi tạo Cookies
@@ -52,8 +52,7 @@ axiosInstance.interceptors.response.use(
                 console.error('Token refresh failed', err);
                 const refreshToken = cookies.get('refreshToken');
                 console.log(refreshToken)
-                // Điều hướng người dùng tới trang đăng nhập
-                window.location.href = '/login';
+
                 return Promise.reject(err);
             }
         }

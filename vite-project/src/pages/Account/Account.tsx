@@ -11,6 +11,7 @@ import { Route, Routes } from 'react-router-dom'
 import AccountAddress from './AccountAddress'
 import AccountOrder from './AccountOrder'
 import AccountOrderDetails from './AccountOrderDetails'
+import AccountChangePassword from './AccountChangePassword'
 const Account = () => {
  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
  
@@ -36,6 +37,7 @@ const Account = () => {
                                     <Route path='dia-chi' element={<AccountAddress/>}/>
                                     <Route path='don-hang/*' element={<AccountOrder/>}/>
                                     <Route path='don-hang/details' element={<AccountOrderDetails/>}/>
+                                    <Route path='doi-mat-khau' element={<AccountChangePassword/>}/>
                                 </Routes>
                                 
                             </div>

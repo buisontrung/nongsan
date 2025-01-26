@@ -1,10 +1,10 @@
 import { faAddressCard, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useAuth } from "../../Context/useAuth";
+import { useAuth } from "../../../Context/useAuth";
 import { useEffect, useState } from "react";
 import { Address, ListProvince } from "../../../utils/IVegetable";
 import axios from "axios";
-import { APIENDPOINT } from "../../../utils/constant";
+import { APIENDPOINT } from "../../../configs/constant";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 interface CheckoutAddressProps {
@@ -79,12 +79,17 @@ const CheckoutAddress: React.FC<CheckoutAddressProps> = ({ onActiveChange }) => 
             const res = await axios.post(`${APIENDPOINT}/auth/api/Address/add`, {
                 id: 0,
                 userId: user?.id,
+                //mặc định hay không mặc định
                 isPrimary: selectedValue,
+                //địa chỉ cụ thể
                 addressName: addressName,
+                //tên người nhận
                 userNameAddress: userNameAddress,
                 phoneNumberAddress: phoneNumberAddress,
                 city: value[0],
+                //quận huy
                 district: value[1],
+                //phường xã
                 wardsCommunes: value[2]
             });
 
@@ -94,6 +99,7 @@ const CheckoutAddress: React.FC<CheckoutAddressProps> = ({ onActiveChange }) => 
                 if (selectedValue) {
                     setPrimaryAddress(res.data);
                     setSelected(res.data.id);
+                    onActiveChange(res.data)
                     console.log("Primary Address:", res.data); // Kiểm tra dữ liệu
                 }
 
@@ -218,10 +224,12 @@ const CheckoutAddress: React.FC<CheckoutAddressProps> = ({ onActiveChange }) => 
                                                             item?.city}
                                                     </div>
                                                 </div>
-                                                <div className="mt-2 mb-4">
+                                                {
+                                                    item.isPrimary?<div className="mt-2 mb-4">
                                                     <span className="span-address-btn span-default">Mặc định</span>
                                                     <span className="span-address-btn address-grey">Địa chỉ lấy hàng</span>
-                                                </div>
+                                                </div>:""
+                                                }
                                             </div>
                                         </div>
                                     ))}

@@ -1,5 +1,5 @@
 import Slider from "react-slick";
-import { homepartner } from "../../../utils/array";
+import { homepartner } from "../../../const/array";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './HomePartner.scss'

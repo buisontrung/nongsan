@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { comment, post, user } from "../../utils/IVegetable";
 import axios from "axios";
-import { APIENDPOINT } from "../../utils/constant";
+import { APIENDPOINT } from "../../configs/constant";
 import * as signalR from "@microsoft/signalr";
-import { useAuth } from "../../components/Context/useAuth";
+import { useAuth } from "../../Context/useAuth";
 import NavDrawer from "../../components/AppBar/NavDrawer/NavDrawer";
 import Header from "../../components/AppBar/Header/Header";
 import "./PostDetail.scss"
